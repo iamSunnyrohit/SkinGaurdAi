@@ -1,6 +1,3 @@
-/* View-specific helper layouts */
-
-/* Dashboard Layout */
 .dashboard-grid {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
@@ -294,7 +291,8 @@
   background-color: var(--bg-secondary);
 }
 
-.clinic-card:hover, .clinic-card.selected {
+.clinic-card:hover,
+.clinic-card.selected {
   border-color: var(--color-primary);
   background-color: var(--color-primary-light);
 }
@@ -344,7 +342,8 @@
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
-.map-marker:hover, .map-marker.active {
+.map-marker:hover,
+.map-marker.active {
   transform: translate(-50%, -50%) scale(1.25);
   color: var(--color-primary);
 }
@@ -354,6 +353,7 @@
     grid-template-columns: 1fr;
     height: auto;
   }
+
   .mock-map {
     height: 300px;
   }

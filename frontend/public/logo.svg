@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="100%" height="100%">
+  <defs>
+    <!-- Ultra-Bright Neon Gradient (Cyan to Hot Pink) -->
+    <linearGradient id="brightNeonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f2fe" />   <!-- Electric Cyan -->
+      <stop offset="50%" stop-color="#7928ca" />  <!-- Royal Violet -->
+      <stop offset="100%" stop-color="#ff007f" /> <!-- Hot Pink -->
+    </linearGradient>
+
+    <!-- Supercharged Laser Scan Line (Neon Lime Green) -->
+    <linearGradient id="brightLaserGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#39ff14" stop-opacity="0" />
+      <stop offset="50%" stop-color="#39ff14" stop-opacity="1" /> <!-- High-visibility Neon Lime -->
+      <stop offset="100%" stop-color="#39ff14" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Target Brackets (Vibrant Cyan Glow) -->
+    <linearGradient id="brightHoloGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#00f2fe" />
+      <stop offset="100%" stop-color="#39ff14" />
+    </linearGradient>
+
+    <!-- Intense Projection Glow Filter for Light Layouts -->
+    <filter id="highContrastGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComponentTransfer in="blur" result="brightBlur">
+        <feFuncA type="linear" slope="1.5"/> <!-- Intensify alpha density for light backgrounds -->
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode in="brightBlur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Strong drop shadow to anchor elements against light backdrops -->
+    <filter id="crispShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0f172a" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <!-- Transparent Background (Omit colored rects to allow clean dashboard integration) -->
+
+  <!-- 1. High-Visibility Shield and Scanning System -->
+  <g transform="translate(0, -10)" filter="url(#crispShadow)">
+    
+    <!-- Bold Outer Shield Frame (Stroke thickness pumped to 24 for instant legibility) -->
+    <path d="M 400,160 
+             C 500,160 590,190 590,190 
+             C 590,360 560,510 400,620 
+             C 240,510 210,360 210,190 
+             C 210,190 300,160 400,160 Z" 
+          fill="none" 
+          stroke="url(#brightNeonGrad)" 
+          stroke-width="24" 
+          stroke-linejoin="round" 
+          stroke-linecap="round"
+          filter="url(#highContrastGlow)" />
+
+    <!-- Radiant Inner Shield Core -->
+    <path d="M 400,190 
+             C 480,190 550,215 550,215 
+             C 550,350 525,480 400,575 
+             C 275,480 250,350 250,215 
+             C 250,215 320,190 400,190 Z" 
+          fill="url(#brightNeonGrad)" 
+          opacity="0.15" />
+
+    <!-- Bold Crosshairs -->
+    <!-- Magenta Horizontal Crosshair -->
+    <line x1="140" y1="385" x2="660" y2="385" stroke="#ff007f" stroke-width="4" opacity="0.4" stroke-dasharray="12 12"/>
+    <!-- Cyan Vertical Crosshair -->
+    <line x1="400" y1="100" x2="400" y2="670" stroke="#00f2fe" stroke-width="4" opacity="0.4" stroke-dasharray="12 12"/>
+
+    <!-- High-Intensity Neon Lime Active Scan Line -->
+    <path d="M 215,335 Q 400,425 585,335" 
+          fill="none" 
+          stroke="url(#brightLaserGrad)" 
+          stroke-width="16" 
+          opacity="0.95" />
+    <path d="M 215,335 Q 400,425 585,335" 
+          fill="none" 
+          stroke="#39ff14" 
+          stroke-width="5" 
+          filter="url(#highContrastGlow)" 
+          stroke-linecap="round" />
+
+    <!-- Central High-Intensity Target Ring -->
+    <g transform="translate(400,385)" filter="url(#highContrastGlow)">
+      <!-- Pure White Center Point -->
+      <circle cx="0" cy="0" r="22" fill="#ffffff" stroke="#00f2fe" stroke-width="3" filter="url(#crispShadow)"/>
+      <circle cx="0" cy="0" r="36" fill="none" stroke="#00f2fe" stroke-width="6" />
+      
+      <!-- Vivid Floating Brackets -->
+      <path d="M -60,-25 L -60,-60 L -25,-60" fill="none" stroke="url(#brightHoloGrad)" stroke-width="8" stroke-linecap="round" />
+      <path d="M 60,-25 L 60,-60 L 25,-60" fill="none" stroke="url(#brightHoloGrad)" stroke-width="8" stroke-linecap="round" />
+      <path d="M -60,25 L -60,60 L -25,60" fill="none" stroke="url(#brightHoloGrad)" stroke-width="8" stroke-linecap="round" />
+      <path d="M 60,25 L 60,60 L 25,60" fill="none" stroke="url(#brightHoloGrad)" stroke-width="8" stroke-linecap="round" />
+    </g>
+  </g>
+
+  <!-- 2. Stark High-Contrast Typography (Readable on any background) -->
+  <text x="400" y="715" 
+        font-family="system-ui, -apple-system, sans-serif" 
+        font-size="46" 
+        font-weight="900" 
+        letter-spacing="6" 
+        fill="#0f172a" 
+        text-anchor="middle">
+    SKIN GUARD <tspan fill="url(#brightNeonGrad)">AI</tspan>
+  </text>
+
+  <!-- High-contrast slate subtitle -->
+  <text x="400" y="755" 
+        font-family="system-ui, -apple-system, sans-serif" 
+        font-size="20" 
+        font-weight="800" 
+        letter-spacing="9" 
+        fill="#475569" 
+        text-anchor="middle">
+    DEEP LEARNING DIAGNOSTICS
+  </text>
+</svg>
