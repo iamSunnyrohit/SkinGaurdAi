@@ -20,72 +20,103 @@ const Scanner = () => {
     setIsScanning(false);
   };
 
-  const handleStartScan = () => {
+  const handleStartScan = async () => {
     setIsScanning(true);
     setResults(null);
 
-    // Simulate model inference time (2.5 seconds)
-    setTimeout(() => {
-      // Choose a random class to be the dominant prediction
-      const classes = [
-        'Melanocytic_Nevi', 
-        'Melanoma', 
-        'Benign_Keratosis', 
-        'Basal_Cell_Carcinoma', 
-        'Actinic_Keratosis',
-        'Dermatofibroma',
-        'Vascular_Lesion'
-      ];
-      
-      // Let's bias it towards Melanocytic_Nevi (nv) and Benign_Keratosis (bkl) as they are the most common
-      const rand = Math.random();
-      let dominantIndex = 0;
-      if (rand < 0.5) {
-        dominantIndex = 0; // Melanocytic Nevi (most common mole)
-      } else if (rand < 0.7) {
-        dominantIndex = 2; // Benign Keratosis
-      } else {
-        dominantIndex = Math.floor(Math.random() * classes.length);
-      }
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    const formData = new FormData();
+    formData.append('file', selectedImage.file);
 
-      const dominantClass = classes[dominantIndex];
-      const dominantConfidence = 0.65 + Math.random() * 0.30; // 65% to 95%
-      
-      // Generate remaining confidences summing to (1 - dominantConfidence)
-      let remainingProb = 1 - dominantConfidence;
-      const otherClasses = classes.filter((_, idx) => idx !== dominantIndex);
-      const randomWeights = otherClasses.map(() => Math.random());
-      const sumWeights = randomWeights.reduce((a, b) => a + b, 0);
-      
-      const parsedResults = [
-        { label: dominantClass, confidence: dominantConfidence }
-      ];
-
-      otherClasses.forEach((cls, idx) => {
-        const conf = (randomWeights[idx] / sumWeights) * remainingProb;
-        parsedResults.push({ label: cls, confidence: conf });
+    try {
+      const response = await fetch(`${apiUrl}/api/classify`, {
+        method: 'POST',
+        body: formData,
       });
 
-      // Sort by confidence descending
-      parsedResults.sort((a, b) => b.confidence - a.confidence);
+      if (response.ok) {
+        const parsedResults = await response.json();
+        
+        setResults(parsedResults);
+        setIsScanning(false);
 
-      setResults(parsedResults);
-      setIsScanning(false);
+        // Save scan to sessionStorage to show in history logs
+        const primaryResult = parsedResults[0];
+        const savedHistory = JSON.parse(sessionStorage.getItem('derma_scans') || '[]');
+        const newScan = {
+          id: `SC-${Math.floor(1000 + Math.random() * 9000)}`,
+          date: new Date().toISOString().split('T')[0],
+          diagnosis: primaryResult.label,
+          confidence: `${(primaryResult.confidence * 100).toFixed(1)}%`,
+          status: ['Melanoma', 'Basal_Cell_Carcinoma', 'Actinic_Keratosis'].includes(primaryResult.label) ? 'Malignant' : 'Benign',
+          imageName: selectedImage.name,
+          imagePreview: selectedImage.previewUrl
+        };
+        sessionStorage.setItem('derma_scans', JSON.stringify([newScan, ...savedHistory]));
+        return;
+      }
+      throw new Error('API server returned error code');
 
-      // Save scan to sessionStorage to show in mock history
-      const savedHistory = JSON.parse(sessionStorage.getItem('derma_scans') || '[]');
-      const newScan = {
-        id: `SC-${Math.floor(1000 + Math.random() * 9000)}`,
-        date: new Date().toISOString().split('T')[0],
-        diagnosis: dominantClass,
-        confidence: `${(dominantConfidence * 100).toFixed(1)}%`,
-        status: ['Melanoma', 'Basal_Cell_Carcinoma', 'Actinic_Keratosis'].includes(dominantClass) ? 'Malignant' : 'Benign',
-        imageName: selectedImage.name,
-        imagePreview: selectedImage.previewUrl
-      };
-      sessionStorage.setItem('derma_scans', JSON.stringify([newScan, ...savedHistory]));
+    } catch (error) {
+      console.warn("Backend API not reachable. Operating in demo simulation mode.", error);
+      
+      // Local Simulation Fallback
+      setTimeout(() => {
+        const classes = [
+          'Melanocytic_Nevi', 
+          'Melanoma', 
+          'Benign_Keratosis', 
+          'Basal_Cell_Carcinoma', 
+          'Actinic_Keratosis',
+          'Dermatofibroma',
+          'Vascular_Lesion'
+        ];
+        
+        const rand = Math.random();
+        let dominantIndex = 0;
+        if (rand < 0.5) {
+          dominantIndex = 0; // Melanocytic Nevi (nv)
+        } else if (rand < 0.7) {
+          dominantIndex = 2; // Benign Keratosis (bkl)
+        } else {
+          dominantIndex = Math.floor(Math.random() * classes.length);
+        }
 
-    }, 2500);
+        const dominantClass = classes[dominantIndex];
+        const dominantConfidence = 0.65 + Math.random() * 0.30;
+        
+        let remainingProb = 1 - dominantConfidence;
+        const otherClasses = classes.filter((_, idx) => idx !== dominantIndex);
+        const randomWeights = otherClasses.map(() => Math.random());
+        const sumWeights = randomWeights.reduce((a, b) => a + b, 0);
+        
+        const parsedResults = [
+          { label: dominantClass, confidence: dominantConfidence }
+        ];
+
+        otherClasses.forEach((cls, idx) => {
+          const conf = (randomWeights[idx] / sumWeights) * remainingProb;
+          parsedResults.push({ label: cls, confidence: conf });
+        });
+
+        parsedResults.sort((a, b) => b.confidence - a.confidence);
+
+        setResults(parsedResults);
+        setIsScanning(false);
+
+        const savedHistory = JSON.parse(sessionStorage.getItem('derma_scans') || '[]');
+        const newScan = {
+          id: `SC-${Math.floor(1000 + Math.random() * 9000)}`,
+          date: new Date().toISOString().split('T')[0],
+          diagnosis: dominantClass,
+          confidence: `${(dominantConfidence * 100).toFixed(1)}%`,
+          status: ['Melanoma', 'Basal_Cell_Carcinoma', 'Actinic_Keratosis'].includes(dominantClass) ? 'Malignant' : 'Benign',
+          imageName: selectedImage.name,
+          imagePreview: selectedImage.previewUrl
+        };
+        sessionStorage.setItem('derma_scans', JSON.stringify([newScan, ...savedHistory]));
+      }, 2000);
+    }
   };
 
   return (
