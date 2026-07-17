@@ -52,7 +52,7 @@ try:
     
     if os.path.exists(model_path):
         import tensorflow as tf
-        model = tf.keras.models.load_model(model_path)
+        model = tf.keras.models.load_model(model_path, compile=False)
         print("Successfully loaded Keras classification model.")
     else:
         raise FileNotFoundError(f"No classifier model found at {model_path}. Please check file staging.")
