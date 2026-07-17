@@ -44,6 +44,4 @@ Thumbs.db
 models/HAM10000_images_part_1/
 models/HAM10000_images_part_2/
 models/sorted_dataset/
-models/*.h5
-models/*.keras
 models/*.csv

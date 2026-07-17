@@ -2,7 +2,9 @@ import os
 import io
 import numpy as np
 from PIL import Image
+# pyrefly: ignore [missing-import]
 from fastapi import FastAPI, File, UploadFile, HTTPException
+# pyrefly: ignore [missing-import]
 from fastapi.middleware.cors import CORSMiddleware
 
 # Initialize FastAPI application
